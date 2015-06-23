@@ -1,7 +1,7 @@
 {
-  "name": "todoapp",
-  "version": "0.1.0",
-  "description": "React components based on React Bootstrap for Bootstrap 3.",
+  "name": "${project.name}",
+  "version": "${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}",
+  "description": "${project.description}",
   "homepage": "http://cokeschlumpf.github.io/react-flatui/",
   "keywords": [
     "react",
@@ -33,13 +33,19 @@
     "react-bootstrap": "^0.23.4"
   },
   "devDependencies": {
-    "babel": "^5.5.8",
+    "babel": "^5.6.4",
+    "babel-core": "^5.6.4",
     "babel-plugin-object-assign": "^1.1.0",
     "browserify": "^10.2.4",
     "catw": "^1.0.1",
     "envify": "~3.2.0",
     "eslint": "^0.23.0",
     "eslint-plugin-react": "^2.5.2",
+    "grunt": "^0.4.5",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-maven": "^1.1.0",
+    "grunt-run": "^0.3.0",
     "less": "^2.5.1",
     "uglify-js": "^2.4.15",
     "npm-watch": "^0.0.0"

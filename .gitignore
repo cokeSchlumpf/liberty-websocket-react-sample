@@ -1,2 +1,8 @@
+.classpath
+.settings
+.project
+target/
+target-grunt/
 .DS_Store
 node_modules/
+/target/

@@ -1,0 +1,60 @@
+{
+  "name": "todoapp",
+  "version": "0.1.0",
+  "description": "React components based on React Bootstrap for Bootstrap 3.",
+  "homepage": "http://cokeschlumpf.github.io/react-flatui/",
+  "keywords": [
+    "react",
+    "ecosystem-react",
+    "react-component",
+    "bootstrap",
+    "jsx"
+  ],
+  "author": "Michael Wellner <info@michaelwellner.de>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cokeSchlumpf/react-flatui.git"
+  },
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib/"
+  },
+  "peerDependencies": {
+    "react": ">=0.13",
+    "react-bootstrap": ">=0.23.4"
+  },
+  "dependencies": {
+    "classnames": "^2.1.2",
+    "jquery": "^2.1.4",
+    "react": "^0.13.3",
+    "react-flexbox-ui": "^0.0.4",
+    "react-flux": "^1.0.0",
+    "react-bootstrap": "^0.23.4"
+  },
+  "devDependencies": {
+    "babel": "^5.5.8",
+    "babel-plugin-object-assign": "^1.1.0",
+    "browserify": "^10.2.4",
+    "catw": "^1.0.1",
+    "envify": "~3.2.0",
+    "eslint": "^0.23.0",
+    "eslint-plugin-react": "^2.5.2",
+    "less": "^2.5.1",
+    "uglify-js": "^2.4.15",
+    "npm-watch": "^0.0.0"
+  },
+  "scripts": {    
+    "build": "npm run lint && npm run babel && npm run browserify && npm run css && rm -rf ./tmp",
+    
+    "css": "catw -c 'lessc -' './src/style.less' > ./assets/css/todo.css",
+    "lint": "eslint ./src",
+    "babel": "babel ./src --plugins object-assign --out-dir ./tmp/transpiled --source-maps inline",
+    "browserify": "browserify ./tmp/transpiled/main.js > ./assets/js/todo.min.js",
+    
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": "src/**/*.{js,less}"
+  }
+}

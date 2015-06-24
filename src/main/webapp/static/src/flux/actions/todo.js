@@ -7,15 +7,21 @@ let api = restful('localhost')
   .prefixUrl('todoapp/ws')
   .protocol('http')
   .port(9080);
+  
+const handleException = function(reject) {
+  return function(response) {
+    reject(response.data);
+  };
+};
 
 export default ReactFlux.createActions({
   create: [ Constants.CREATE, function(description) {
     return new Promise(function(resolve, reject) {
-      api.all('todos').post({ description: description, done: false }).then(function(response) {
-        resolve(response.body(false)); 
-      }, function(response) {
-        reject(new Error(response.body(false)));
-      });
+      api
+        .all('todos')
+        .post({ description: description, done: false })
+        .then(function(response) { resolve(response.body(false)); })
+        .catch(handleException(reject));
     });
   } ],
 

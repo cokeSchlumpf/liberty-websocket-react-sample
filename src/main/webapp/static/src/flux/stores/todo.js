@@ -1,51 +1,41 @@
-import React from 'react/addons';
 import ReactFlux from 'react-flux';
 import Constants from '../constants/todo';
+
+import TodoActions from '../actions/todo';
 
 let Store = ReactFlux.createStore({
     getInitialState: function() {
       return {
-        data: [
-          { id: 0, description: 'Hallo Freunde!', done: false }
-        ],
+        data: [],
         error: null
       };
     },
 
     storeDidMount: function() {
-
+      TodoActions.list();
     }
   },
   [
-    [ Constants.CREATE_SUCCESS, function handleCreateSuccess(payload) {
-      this.setState(React.addons.update(this.state.getState(), {
-        data: { $push: [ payload ] },
-        error: { $set: null }
-      }));
+    [ Constants.CREATE_SUCCESS, function handleCreateSuccess() {
+      TodoActions.list();
     } ],
 
     [ Constants.CREATE_FAIL, function handleDoneFail(error) {
       this.setState({ error: error.message });
     } ],
 
-    [ Constants.DELETE_SUCCESS, function handleDeleteSuccess(payload) {
-      this.setState({
-        data: this.state.getState().data.filter(function(item) {
-          return item.id !== payload.id;
-        })
-      });
+    [ Constants.DELETE_SUCCESS, function handleDeleteSuccess() {
+      TodoActions.list();
     } ],
 
-    [ Constants.DONE_SUCCESS, function handleDoneSuccess(payload) {
+    [ Constants.DONE_SUCCESS, function handleDoneSuccess() {
+      TodoActions.list();
+    } ],
+    
+    [ Constants.LIST_SUCCESS, function handleListSuccess(payload) {      
       this.setState({
-        data: this.state.getState().data.map(function(item) {
-          if (item.id === payload.id) {
-            item.done = payload.done;
-          }
-
-          return item;
-        })
-      });
+        data: payload
+      })
     } ]
   ]);
 

@@ -13,6 +13,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,8 +25,7 @@ import ws.AbstractService;
 import ws.WebApplicationPreconditions;
 
 @Stateless
-@Path("todo")
-@Consumes(MediaType.APPLICATION_JSON)
+@Path("todos")
 @Produces(MediaType.APPLICATION_JSON)
 public class TodoService extends AbstractService {
 
@@ -46,6 +46,8 @@ public class TodoService extends AbstractService {
       setLinkToItem(item);
       servletResponse.addHeader("Location", item.getLink());
     }
+    
+    servletResponse.addHeader("Access-Control-Allow-Origin", "*");
 
     return result;
   }
@@ -62,6 +64,7 @@ public class TodoService extends AbstractService {
   }
 
   @POST
+  @Consumes(MediaType.APPLICATION_JSON)
   public TodoItem add(TodoItem item) {
     WebApplicationPreconditions.checkNotNull(item, "001", "TodoItem is not allowed to be null.");
     WebApplicationPreconditions.checkArgument(item.getId() == null, "002", "Id is not allowed to be set.");
@@ -71,6 +74,7 @@ public class TodoService extends AbstractService {
   }
 
   @GET
+  @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
   public List<TodoItem> list() {
     CriteriaQuery<TodoItem> criteria = em.getCriteriaBuilder().createQuery(TodoItem.class);
     criteria.select(criteria.from(TodoItem.class));
@@ -88,25 +92,28 @@ public class TodoService extends AbstractService {
 
   @GET
   @Path("{id}")
+  @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
   public TodoItem get(@PathParam("id") Long id) {
     TodoItem item = em.find(TodoItem.class, id);
     WebApplicationPreconditions.checkNotNull(item, "003", "No Item found with id `" + id + "`");
     return item;
   }
 
-  @POST
+  @PUT
   @Path("{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
   public TodoItem update(@PathParam("id") Long id, TodoItem updatedItem) {
     TodoItem item = get(id);
 
+    item.setDone(updatedItem.isDone());
     item.setDescription(updatedItem.getDescription());
-    item.setSummary(updatedItem.getSummary());
 
     return item;
   }
 
   @DELETE
   @Path("{id}")
+  @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
   public void remove(@PathParam("id") Long id) {
     TodoItem item = get(id);
     em.remove(item);

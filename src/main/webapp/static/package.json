@@ -30,7 +30,8 @@
     "react": "^0.13.3",
     "react-flexbox-ui": "^0.0.4",
     "react-flux": "^1.0.0",
-    "react-bootstrap": "^0.23.4"
+    "react-bootstrap": "^0.23.4",
+    "restful.js": "^0.6.1"
   },
   "devDependencies": {
     "babel": "^5.6.4",

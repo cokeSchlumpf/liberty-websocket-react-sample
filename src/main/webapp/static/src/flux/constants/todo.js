@@ -4,5 +4,6 @@ export default ReactFlux.createConstants([
 	'CREATE',
 	'DELETE',
 	'DONE',
-	'LIST'
+	'LIST',
+	'INIT'
 ], 'TODO');

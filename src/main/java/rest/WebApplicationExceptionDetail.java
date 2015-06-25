@@ -1,4 +1,4 @@
-package ws;
+package rest;
 
 import javax.xml.bind.annotation.XmlType;
 

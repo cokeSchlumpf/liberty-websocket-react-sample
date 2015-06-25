@@ -1,4 +1,6 @@
-package ws.todo;
+package resources.todo;
+
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,20 +13,45 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import ws.JSONCoder;
+
 @Entity
 @XmlType(propOrder = { "id", "done", "description", "link" })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TodoItem {
+  
+  public static class TodoItemCoder extends JSONCoder<TodoItem> {}
+  
+  public static class TodoItemsCoder extends JSONCoder<TodoItems> {}
+  
+  @XmlType
+  @XmlAccessorType(XmlAccessType.FIELD)
+  public static class TodoItems {
+    
+    public List<TodoItem> items;
+    
+    public TodoItems(List<TodoItem> items) {
+      this.setItems(items);
+    }
+    
+    public List<TodoItem> getItems() {
+      return items;
+    }
+    
+    public void setItems(List<TodoItem> items) {
+      this.items = items;
+    }
+    
+  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private boolean done;
   private String description;
- 
 
   @Transient
-  private String link;
+  private String link;  
 
   public TodoItem() {}
 

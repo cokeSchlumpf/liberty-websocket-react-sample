@@ -3,10 +3,15 @@ import restful from 'restful.js';
 
 import Constants from '../constants/todo';
 
+let rest = false;
+
 let api = restful('localhost')
-  .prefixUrl('todoapp/ws')
+  .prefixUrl('todoapp/rest')
   .protocol('http')
   .port(9080);
+  
+const WS = window.WebSocket ? window.WebSocket : require('websocket').w3cwebsocket;
+let ws = null;
   
 const handleException = function(reject) {
   return function(response) {
@@ -14,7 +19,7 @@ const handleException = function(reject) {
   };
 };
 
-export default ReactFlux.createActions({
+let actions = ReactFlux.createActions({
   create: [ Constants.CREATE, function(description) {
     return new Promise(function(resolve, reject) {
       api
@@ -52,13 +57,45 @@ export default ReactFlux.createActions({
     });
   } ],
 
-  list: [ Constants.LIST, function() {
-    return new Promise(function(resolve, reject) {
-      api.all('todos').getAll().then(function(response) {
-        resolve(response.body(false));
-      }, function(response) {
-        reject(new Error(response.body(false)));
+  list: [ Constants.LIST, function(list) {
+    let result = null;
+    
+    if (rest) {
+      result = new Promise(function(resolve, reject) {
+        api.all('todos').getAll().then(function(response) {
+          resolve(response.body(false));
+        }, function(response) {
+          reject(new Error(response.body(false)));
+        });
       });
-    });
+    } else {
+      result = list;
+    }
+    
+    return result;
+  } ],
+  
+  init: [ Constants.INIT, function() {
+    if (rest) {
+      actions.list();
+    } else {
+      ws = new WS('ws://localhost:9080/todoapp/todo');
+      ws.onopen = function() {
+        ws.onmessage = function (event) {
+          console.log(event.data);
+          const message = JSON.parse(event.data);
+          const item = JSON.parse(message.data);
+          
+          if (message.action === "LIST") {
+            console.log(item);
+            actions.list(item.items);
+          }
+        };
+        
+        ws.send(JSON.stringify({ action: "LIST" }));
+      }
+    }
   } ]
 });
+
+export default actions;

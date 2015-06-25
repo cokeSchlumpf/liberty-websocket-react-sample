@@ -1,13 +1,13 @@
-package ws;
+package rest;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
 
-import ws.todo.TodoService;
+import resources.todo.TodoService;
 
-@ApplicationPath("ws")
+@ApplicationPath("rest")
 public class Application extends javax.ws.rs.core.Application {
 
   @Override

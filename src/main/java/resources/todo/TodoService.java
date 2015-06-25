@@ -1,13 +1,13 @@
-package ws.todo;
+package resources.todo;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Observer;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -21,19 +21,21 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-import ws.AbstractService;
-import ws.WebApplicationPreconditions;
+import rest.AbstractService;
 
 @Stateless
 @Path("todos")
 @Produces(MediaType.APPLICATION_JSON)
-public class TodoService extends AbstractService {
+public class TodoService extends AbstractService implements ITodoItemDAO {
 
   @Context
   private UriInfo uriInfo;
 
   @Context
   private HttpServletResponse servletResponse;
+
+  @EJB(beanName = "TodoItemDAO")
+  private ITodoItemDAO dao;
 
   @AroundInvoke
   protected Object handleAroundInvoke(InvocationContext ctx) throws Exception {
@@ -46,12 +48,12 @@ public class TodoService extends AbstractService {
       setLinkToItem(item);
       servletResponse.addHeader("Location", item.getLink());
     }
-    
+
     servletResponse.addHeader("Access-Control-Allow-Origin", "*");
 
     return result;
   }
-  
+
   private void setLinkToItem(TodoItem item) {
     URI uri;
     if (uriInfo.getPathParameters().size() == 0) {
@@ -66,57 +68,45 @@ public class TodoService extends AbstractService {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public TodoItem add(TodoItem item) {
-    WebApplicationPreconditions.checkNotNull(item, "001", "TodoItem is not allowed to be null.");
-    WebApplicationPreconditions.checkArgument(item.getId() == null, "002", "Id is not allowed to be set.");
-
-    em.persist(item);
-    return item;
+    return dao.add(item);
   }
 
   @GET
   @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
   public List<TodoItem> list() {
-    CriteriaQuery<TodoItem> criteria = em.getCriteriaBuilder().createQuery(TodoItem.class);
-    criteria.select(criteria.from(TodoItem.class));
-    List<TodoItem> result = em //
-        .createQuery(criteria)//
-        .getResultList()//
-        .stream()//
-        .map(item -> {
-          setLinkToItem(item);
-          return item;
-        })//
-        .collect(Collectors.toList());
-    return result;
+    return dao.list();
   }
 
   @GET
   @Path("{id}")
   @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
   public TodoItem get(@PathParam("id") Long id) {
-    TodoItem item = em.find(TodoItem.class, id);
-    WebApplicationPreconditions.checkNotNull(item, "003", "No Item found with id `" + id + "`");
-    return item;
+    return dao.get(id);
   }
 
   @PUT
   @Path("{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   public TodoItem update(@PathParam("id") Long id, TodoItem updatedItem) {
-    TodoItem item = get(id);
-
-    item.setDone(updatedItem.isDone());
-    item.setDescription(updatedItem.getDescription());
-
-    return item;
+    return dao.update(id, updatedItem);
   }
 
   @DELETE
   @Path("{id}")
   @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
   public void remove(@PathParam("id") Long id) {
-    TodoItem item = get(id);
-    em.remove(item);
+    dao.remove(id);
+  }
+  
+  @Override
+  public void addObserver(Observer o) {
+    // TODO Auto-generated method stub
+  }
+  
+  @Override
+  public void deleteObserver(Observer o) {
+    // TODO Auto-generated method stub
+    
   }
 
 }

@@ -7,18 +7,19 @@ let Store = ReactFlux.createStore({
     getInitialState: function() {
       return {
         data: [],
-        error: null
+        error: null,
+        rest: false
       };
     },
 
     storeDidMount: function() {
-      TodoActions.init();
+      TodoActions.init(this.state.rest);
     }
   },
   [
     [ Constants.CREATE_SUCCESS, function handleCreateSuccess() {
       this.setState({ error: null });
-      // TodoActions.list();
+      if (this.state.getState().rest) { TodoActions.list(); }
     } ],
 
     [ Constants.CREATE_FAIL, function handleDoneFail(error) {
@@ -27,18 +28,22 @@ let Store = ReactFlux.createStore({
 
     [ Constants.DELETE_SUCCESS, function handleDeleteSuccess() {
       this.setState({ error: null });
-      // TodoActions.list();  
+      if (this.state.getState().rest) { TodoActions.list(); }
     } ],
 
     [ Constants.DONE_SUCCESS, function handleDoneSuccess() {
       this.setState({ error: null });
-      // TodoActions.list();  
+      if (this.state.getState().rest) { TodoActions.list(); }
     } ],
     
     [ Constants.LIST_SUCCESS, function handleListSuccess(payload) {      
       this.setState({
         data: payload
       })
+    } ],
+
+    [ Constants.REST_SUCCESS, function handleRest(rest) {
+      this.setState({ rest: rest });      
     } ]
   ]);
 

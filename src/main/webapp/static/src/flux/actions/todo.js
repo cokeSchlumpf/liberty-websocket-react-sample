@@ -75,26 +75,36 @@ let actions = ReactFlux.createActions({
     return result;
   } ],
   
-  init: [ Constants.INIT, function() {
-    if (rest) {
+  init: [ Constants.INIT, function(_rest) {
+    if (_rest) {
       actions.list();
     } else {
+      actions.rest(_rest);
+    }
+  } ],
+  
+  rest: [ Constants.REST, function(_rest) {
+    rest = _rest;
+    
+    if (!rest) {
       ws = new WS('ws://localhost:9080/todoapp/todo');
       ws.onopen = function() {
         ws.onmessage = function (event) {
-          console.log(event.data);
           const message = JSON.parse(event.data);
           const item = JSON.parse(message.data);
           
           if (message.action === "LIST") {
-            console.log(item);
             actions.list(item.items);
           }
         };
         
         ws.send(JSON.stringify({ action: "LIST" }));
       }
+    } else {
+      ws.close();
     }
+    
+    return _rest;
   } ]
 });
 

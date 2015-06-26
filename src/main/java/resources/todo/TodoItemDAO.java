@@ -21,7 +21,7 @@ import rest.WebApplicationPreconditions;
 
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
-public class TodoItemDAO extends Observable implements ITodoItemDAO {
+public class TodoItemDAO extends Observable {
 
   @PersistenceContext(unitName = "TodoApp")
   protected EntityManager em;

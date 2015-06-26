@@ -2,7 +2,6 @@ package resources.todo;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Observer;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -26,7 +25,7 @@ import rest.AbstractService;
 @Stateless
 @Path("todos")
 @Produces(MediaType.APPLICATION_JSON)
-public class TodoService extends AbstractService implements ITodoItemDAO {
+public class TodoService extends AbstractService {
 
   @Context
   private UriInfo uriInfo;
@@ -34,8 +33,8 @@ public class TodoService extends AbstractService implements ITodoItemDAO {
   @Context
   private HttpServletResponse servletResponse;
 
-  @EJB(beanName = "TodoItemDAO")
-  private ITodoItemDAO dao;
+  @EJB
+  private TodoItemDAO dao;
 
   @AroundInvoke
   protected Object handleAroundInvoke(InvocationContext ctx) throws Exception {
@@ -96,17 +95,6 @@ public class TodoService extends AbstractService implements ITodoItemDAO {
   @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
   public void remove(@PathParam("id") Long id) {
     dao.remove(id);
-  }
-  
-  @Override
-  public void addObserver(Observer o) {
-    // TODO Auto-generated method stub
-  }
-  
-  @Override
-  public void deleteObserver(Observer o) {
-    // TODO Auto-generated method stub
-    
   }
 
 }

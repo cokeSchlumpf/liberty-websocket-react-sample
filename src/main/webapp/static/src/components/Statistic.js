@@ -13,7 +13,7 @@ export default React.createClass({
       } else {
         current.open = current.open + 1;
       }
-      
+
       return current;
     }, { open: 0, done: 0 });
 

@@ -36,8 +36,8 @@ public class TodoSocket extends AbstractSocket implements Observer {
   Message.MessageCoder coder = new Message.MessageCoder();
   Actions actions = new Actions();
 
-  @EJB(beanName = "TodoItemDAO")
-  private ITodoItemDAO dao;
+  @EJB
+  private TodoItemDAO dao;
 
   @OnOpen
   public void onOpen(Session session, EndpointConfig ec) {
@@ -86,7 +86,11 @@ public class TodoSocket extends AbstractSocket implements Observer {
   @OnClose
   public void onClose(Session session, CloseReason reason) {
     log.debug("Session closed.");
-    this.dao.deleteObserver(this);
+    try {
+      this.dao.deleteObserver(this);
+    } catch (Exception e) {
+      // ignore ...
+    }
   }
 
   @OnError

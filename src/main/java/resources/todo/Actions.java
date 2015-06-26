@@ -3,12 +3,8 @@ package resources.todo;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.websocket.EndpointConfig;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import ws.AbstractSocket;
 import ws.Action;
 import ws.JSONCoder;
 

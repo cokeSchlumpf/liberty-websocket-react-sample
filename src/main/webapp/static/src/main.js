@@ -19,14 +19,14 @@ $(function() {
         todo: TodoStore.getState()
       };
     },
-    
+
     handleRESTSwitch() {
       TodoActions.rest(!this.state.todo.rest);
     },
 
     render() {
-      const wsLabel = this.state.todo.rest ? "Turn websocket on" : "Turn websocket off";
-      
+      const wsLabel = this.state.todo.rest ? 'Turn websocket on' : 'Turn websocket off';
+
       return (
         <View column expand>
           <BS.Navbar brand="What to do?" inverse>

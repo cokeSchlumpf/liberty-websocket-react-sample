@@ -9,10 +9,10 @@ let api = restful('localhost')
   .prefixUrl('todoapp/rest')
   .protocol('http')
   .port(9080);
-  
+
 const WS = window.WebSocket ? window.WebSocket : require('websocket').w3cwebsocket;
 let ws = null;
-  
+
 const handleException = function(reject) {
   return function(response) {
     reject(response.data);
@@ -25,7 +25,9 @@ let actions = ReactFlux.createActions({
       api
         .all('todos')
         .post({ description: description, done: false })
-        .then(function(response) { resolve(response.body(false)); })
+        .then(function(response) {
+          resolve(response.body(false));
+        })
         .catch(handleException(reject));
     });
   } ],
@@ -37,7 +39,7 @@ let actions = ReactFlux.createActions({
       }, function(response) {
         reject(new Error(response.body(false)));
       });
-    })
+    });
   } ],
 
   done: [ Constants.DONE, function(id, done) {
@@ -59,7 +61,7 @@ let actions = ReactFlux.createActions({
 
   list: [ Constants.LIST, function(list) {
     let result = null;
-    
+
     if (rest) {
       result = new Promise(function(resolve, reject) {
         api.all('todos').getAll().then(function(response) {
@@ -71,10 +73,10 @@ let actions = ReactFlux.createActions({
     } else {
       result = list;
     }
-    
+
     return result;
   } ],
-  
+
   init: [ Constants.INIT, function(_rest) {
     if (_rest) {
       actions.list();
@@ -82,28 +84,28 @@ let actions = ReactFlux.createActions({
       actions.rest(_rest);
     }
   } ],
-  
+
   rest: [ Constants.REST, function(_rest) {
     rest = _rest;
-    
+
     if (!rest) {
       ws = new WS('ws://localhost:9080/todoapp/todo');
       ws.onopen = function() {
         ws.onmessage = function (event) {
           const message = JSON.parse(event.data);
           const item = JSON.parse(message.data);
-          
-          if (message.action === "LIST") {
+
+          if (message.action === 'LIST') {
             actions.list(item.items);
           }
         };
-        
-        ws.send(JSON.stringify({ action: "LIST" }));
-      }
+
+        ws.send(JSON.stringify({ action: 'LIST' }));
+      };
     } else {
       ws.close();
     }
-    
+
     return _rest;
   } ]
 });

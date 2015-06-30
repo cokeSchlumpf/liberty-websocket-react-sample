@@ -23,8 +23,8 @@ module.exports = function(grunt) {
 
     mavenDist: {
       options: {
-        warName: '${project.build.finalName}',
-        deliverables: [],
+        warName: '<%= gruntMavenProperties.warName %>',
+        deliverables: ['**'],
         gruntDistDir: 'dist'
       },
       dist: {}
@@ -53,6 +53,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-run');
 
-  grunt.registerTask('default', [ 'mavenPrepare', 'run:build', 'copy' ]);
+  grunt.registerTask('default', [ 'mavenPrepare', 'run:build', 'copy', 'mavenDist' ]);
 
 };
